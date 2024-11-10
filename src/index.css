@@ -42,3 +42,9 @@
 .prose ol {
   @apply list-decimal pl-4 mb-4;
 }
+
+
+*{
+  font-family: "Poppins";
+}
+

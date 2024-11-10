@@ -4,23 +4,25 @@ import { Lock, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore';
 import UuidDisplay from '../components/UuidDisplay';
 
-type Step = 'username' | 'uuid-display' | 'uuid-verify'; // Defines possible form steps
+type Step = 'username' | 'uuid-display' | 'uuid-verify';
 
 export default function ClaimIdentityPage() {
-  const [step, setStep] = useState<Step>('username');  // Current form step
-  const [anonymousId, setAnonymousId] = useState('');  // Username input
-  const [uuid, setUuid] = useState('');                // UUID input/storage
-  const [generatedUuid, setGeneratedUuid] = useState(''); // Newly generated UUID
-  const [error, setError] = useState('');              // Error messages
-  const [success, setSuccess] = useState('');          // Success messages
-  const [isChecking, setIsChecking] = useState(false); // Loading state
+  const [step, setStep] = useState<Step>('username');
+  const [anonymousId, setAnonymousId] = useState('');
+  const [uuid, setUuid] = useState('');
+  const [generatedUuid, setGeneratedUuid] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isChecking, setIsChecking] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Check localStorage for existing user
-    const existingUuid = localStorage.getItem('userUuid');
-    if (existingUuid) {
-      setUuid(existingUuid);
+    const existingUser = localStorage.getItem('user');
+    const existingUsername = localStorage.getItem('username');
+    if (existingUser && existingUsername) {
+      setUuid(JSON.parse(existingUser).uuid);  // Optional: Parse user info if storing as JSON string
+      setAnonymousId(existingUsername);
       setStep('uuid-verify');
     }
   }, []);
@@ -33,13 +35,6 @@ export default function ClaimIdentityPage() {
     setError('');
     setSuccess('');
 
-    // Validation
-    // if (value.length < 3) {
-    //   setError('Username must be at least 3 characters long');
-    //   return;
-    // }
-
-    // Check availability
     if (value) {
       setIsChecking(true);
       try {
@@ -75,12 +70,15 @@ export default function ClaimIdentityPage() {
     try {
       const user = await getUserByUuid(uuid);
       if (user) {
-        localStorage.setItem('userUuid', user.uuid);
-        navigate('/create-story', { 
-          state: { 
+        // Store user information and username in localStorage
+        localStorage.setItem('user', JSON.stringify(user)); // Convert user object to JSON string
+        localStorage.setItem('username', user.username);
+
+        navigate('/create-story', {
+          state: {
             anonymousId: user.username,
-            uuid: user.uuid 
-          } 
+            uuid: user.uuid,
+          },
         });
       } else {
         setError('Invalid Insider ID. Please try again.');
@@ -94,12 +92,15 @@ export default function ClaimIdentityPage() {
     try {
       const user = await confirmRegistration(generatedUuid);
       if (user) {
-        localStorage.setItem('userUuid', user.uuid);
-        navigate('/create-story', { 
-          state: { 
+        // Store user information and username in localStorage
+        localStorage.setItem('user', JSON.stringify(user)); // Convert user object to JSON string
+        localStorage.setItem('username', user.username);
+
+        navigate('/create-story', {
+          state: {
             anonymousId: user.username,
-            uuid: user.uuid 
-          } 
+            uuid: user.uuid,
+          },
         });
       } else {
         setError('Error confirming registration. Please try again.');
@@ -111,12 +112,11 @@ export default function ClaimIdentityPage() {
     }
   };
 
-  // Rest of the component remains the same...
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-lg">
         <button
-          onClick={() => navigate('/')}
+          onClick={() => navigate(-1)}
           className="mb-8 inline-flex items-center text-gray-600 hover:text-gray-900"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
@@ -131,7 +131,6 @@ export default function ClaimIdentityPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           {step === 'username' && (
             <form onSubmit={handleUsernameSubmit} className="space-y-6">
-              {/* Username input with validation */}
               <div>
                 <label htmlFor="anonymous-id" className="block text-lg font-medium text-gray-900 mb-4">
                   Choose your anonymous identity...
@@ -154,7 +153,6 @@ export default function ClaimIdentityPage() {
                     <Lock className="h-5 w-5 text-gray-400" />
                   </div>
                 </div>
-                {/* Username input with validation */}
                 {error && (
                   <div className="mt-2 flex items-center text-red-600">
                     <AlertCircle className="h-4 w-4 mr-1" />

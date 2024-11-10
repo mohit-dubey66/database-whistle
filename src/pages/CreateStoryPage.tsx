@@ -18,8 +18,15 @@ interface FormData {
   description: string;
 }
 
-const CATEGORIES = ['Company', 'College', 'School', 'Government', 'Other'];
-const TOPICS = ['WorkPressure', 'Bullying', 'Harassment', 'Discrimination', 'Corruption', 'Other'];
+// Category to topics mapping
+const CATEGORY_TOPICS = {
+  Company: ['Toxic Work Culture', 'Burnout and Overwork', 'Compensation', 'Unethical Business Practices', 'Office Politics'],
+  College: ['Exams', 'Faculty', 'Mental Health', 'Placements', 'Curriculum'],
+  Government: ['Corruption', 'Healthcare Failure', 'Government Favouring Rich', 'Public Infrastructure Neglect', 'Police and Judicial Misconduct'],
+  School: ['Bullying', 'Curriculum', 'Teacher-student Relations', 'Mental Health', 'Safety Issues'],
+  Other: ['Other'],
+};
+
 const COUNTRIES = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Other'];
 
 export default function CreateStoryPage() {
@@ -63,6 +70,9 @@ export default function CreateStoryPage() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // Dynamic Topics based on selected Category
+  const filteredTopics = CATEGORY_TOPICS[formData.category] || [];
+
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-4 py-8">
       {/* Back Button */}
@@ -93,7 +103,7 @@ export default function CreateStoryPage() {
                 type="text"
                 value={anonymousId}
                 disabled
-                className="block w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-500"
+                className="block w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-500 outline-none"
               />
             </div>
 
@@ -113,11 +123,12 @@ export default function CreateStoryPage() {
                   className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
                 >
                   <option value="">Select your category</option>
-                  {CATEGORIES.map(cat => (
+                  {Object.keys(CATEGORY_TOPICS).map(cat => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
               </div>
+              
               {/* Topic Dropdown */}
               <div>
                 <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-1">
@@ -130,9 +141,10 @@ export default function CreateStoryPage() {
                   onChange={handleChange}
                   required
                   className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
+                  disabled={!formData.category}
                 >
                   <option value="">Choose your topic</option>
-                  {TOPICS.map(topic => (
+                  {filteredTopics.map(topic => (
                     <option key={topic} value={topic}>{topic}</option>
                   ))}
                 </select>
