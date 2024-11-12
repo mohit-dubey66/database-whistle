@@ -4,12 +4,10 @@ import { ArrowLeft } from 'lucide-react';
 import RichTextEditor from '../components/RichTextEditor';
 import { useStoryStore } from '../store/useStoryStore';
 
-// Defines expected location state structure
 interface LocationState {
   anonymousId: string;
 }
 
-// Defines form data structure
 interface FormData {
   category: string;
   topic: string;
@@ -23,12 +21,11 @@ const TOPICS = ['WorkPressure', 'Bullying', 'Harassment', 'Discrimination', 'Cor
 const COUNTRIES = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Other'];
 
 export default function CreateStoryPage() {
-  const navigate = useNavigate(); // For navigation
-  const location = useLocation(); // To access route state
+  const navigate = useNavigate();
+  const location = useLocation();
   const { anonymousId } = (location.state as LocationState) || {};
-  const addStory = useStoryStore((state) => state.addStory); // Zustand store action
+  const addStory = useStoryStore((state) => state.addStory);
 
-  // Form state management
   const [formData, setFormData] = useState<FormData>({
     category: '',
     topic: '',
@@ -37,13 +34,11 @@ export default function CreateStoryPage() {
     description: '',
   });
 
-  // Redirect to identity claim if no anonymousId
   if (!anonymousId) {
     navigate('/claim-identity');
     return null;
   }
 
-  // Form submission handler
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     addStory({
@@ -57,7 +52,6 @@ export default function CreateStoryPage() {
     navigate('/');
   };
 
-  // Input change handler
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -65,7 +59,6 @@ export default function CreateStoryPage() {
 
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-4 py-8">
-      {/* Back Button */}
       <div className="w-full max-w-3xl">
         <button
           onClick={() => navigate(-1)}
@@ -75,16 +68,13 @@ export default function CreateStoryPage() {
           Back
         </button>
 
-        {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">It's time to blow the whistle...</h1>
           <p className="text-gray-600">Make sure you don't reveal your personal details...</p>
         </div>
 
-        {/* Main Form */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Anonymous ID Display (disabled) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Insider Name
@@ -97,9 +87,7 @@ export default function CreateStoryPage() {
               />
             </div>
 
-            {/* Dropdown Selection Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Category Dropdown */}
               <div>
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
                   Category
@@ -118,7 +106,7 @@ export default function CreateStoryPage() {
                   ))}
                 </select>
               </div>
-              {/* Topic Dropdown */}
+
               <div>
                 <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-1">
                   Topic
@@ -137,8 +125,7 @@ export default function CreateStoryPage() {
                   ))}
                 </select>
               </div>
-              
-              {/* Country Dropdown */}
+
               <div>
                 <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
                   Country
@@ -158,8 +145,7 @@ export default function CreateStoryPage() {
                 </select>
               </div>
             </div>
-            
-            {/* Title Input */}
+
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
                 Title
@@ -175,8 +161,7 @@ export default function CreateStoryPage() {
                 className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
               />
             </div>
-            
-            {/* Rich Text Editor for Story */}
+
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
                 Story description
@@ -186,8 +171,7 @@ export default function CreateStoryPage() {
                 onChange={(content) => setFormData(prev => ({ ...prev, description: content }))}
               />
             </div>
-            
-            {/* Submit Button */}
+
             <div className="flex justify-center">
               <button
                 type="submit"

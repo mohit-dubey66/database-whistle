@@ -4,20 +4,20 @@ import { Lock, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore';
 import UuidDisplay from '../components/UuidDisplay';
 
-type Step = 'username' | 'uuid-display' | 'uuid-verify'; // Defines possible form steps
+type Step = 'username' | 'uuid-display' | 'uuid-verify';
 
 export default function ClaimIdentityPage() {
-  const [step, setStep] = useState<Step>('username');  // Current form step
-  const [anonymousId, setAnonymousId] = useState('');  // Username input
-  const [uuid, setUuid] = useState('');                // UUID input/storage
-  const [generatedUuid, setGeneratedUuid] = useState(''); // Newly generated UUID
-  const [error, setError] = useState('');              // Error messages
-  const [success, setSuccess] = useState('');          // Success messages
-  const [isChecking, setIsChecking] = useState(false); // Loading state
+  const [step, setStep] = useState<Step>('username');
+  const [anonymousId, setAnonymousId] = useState('');
+  const [uuid, setUuid] = useState('');
+  const [generatedUuid, setGeneratedUuid] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isChecking, setIsChecking] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check localStorage for existing user
+    // Check if user is already logged in
     const existingUuid = localStorage.getItem('userUuid');
     if (existingUuid) {
       setUuid(existingUuid);
@@ -33,13 +33,11 @@ export default function ClaimIdentityPage() {
     setError('');
     setSuccess('');
 
-    // Validation
-    // if (value.length < 3) {
-    //   setError('Username must be at least 3 characters long');
-    //   return;
-    // }
+    if (value.length < 3) {
+      setError('Username must be at least 3 characters long');
+      return;
+    }
 
-    // Check availability
     if (value) {
       setIsChecking(true);
       try {
@@ -131,7 +129,6 @@ export default function ClaimIdentityPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           {step === 'username' && (
             <form onSubmit={handleUsernameSubmit} className="space-y-6">
-              {/* Username input with validation */}
               <div>
                 <label htmlFor="anonymous-id" className="block text-lg font-medium text-gray-900 mb-4">
                   Choose your anonymous identity...
@@ -154,7 +151,6 @@ export default function ClaimIdentityPage() {
                     <Lock className="h-5 w-5 text-gray-400" />
                   </div>
                 </div>
-                {/* Username input with validation */}
                 {error && (
                   <div className="mt-2 flex items-center text-red-600">
                     <AlertCircle className="h-4 w-4 mr-1" />
