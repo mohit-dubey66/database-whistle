@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import RichTextEditor from '../components/RichTextEditor';
@@ -34,7 +34,7 @@ const TOPICS = ['WorkPressure', 'Bullying', 'Harassment', 'Discrimination', 'Cor
 
 export default function CreateStoryPage() {
   const navigate = useNavigate(); // For navigation
-  let anonymousId = JSON.parse(localStorage.getItem('user') || '{}');
+  let anonymousId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '') : '';
   const addStory = useStoryStore((state) => state.addStory); // Zustand store action
 
   const [formData, setFormData] = useState<FormData>({
@@ -45,10 +45,11 @@ export default function CreateStoryPage() {
     description: '',
   });
 
-  if (!anonymousId) {
-    navigate('/claim-identity');
-    return null;
-  }
+  useEffect(() => {
+    if (!anonymousId) {
+      navigate("/claim-identity");
+    }
+  },[]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

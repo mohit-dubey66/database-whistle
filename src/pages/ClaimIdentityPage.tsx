@@ -68,7 +68,7 @@ export default function ClaimIdentityPage() {
     try {
       const user = await getUserByUuid(uuid);
       if (user) {
-        localStorage.setItem('userUuid', user.uuid);
+        localStorage.setItem('user', JSON.stringify({ username: user.username, uuid: user.uuid }));
         navigate('/create-story', { 
           state: { 
             anonymousId: user.username,
@@ -87,7 +87,7 @@ export default function ClaimIdentityPage() {
     try {
       const user = await confirmRegistration(generatedUuid);
       if (user) {
-        localStorage.setItem('userUuid', user.uuid);
+        localStorage.setItem('user', JSON.stringify({ username: user.username, uuid: user.uuid }));
         navigate('/create-story', { 
           state: { 
             anonymousId: user.username,
