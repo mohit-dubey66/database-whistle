@@ -52,7 +52,7 @@ export default function FloatingMenu() {
             isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
           }`}
         >
-          <div className="flex flex-col-reverse gap-3 items-end">
+          <div className="flex flex-col-reverse gap-3 items-end p-5 rounded-md border-gray-200 border border-solid">
             {menuItems.map((item) => (
               <button
                 key={item.label}

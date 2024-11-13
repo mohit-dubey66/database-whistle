@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import RichTextEditor from '../components/RichTextEditor';
 import { useStoryStore } from '../store/useStoryStore';
 
-interface LocationState {
-  anonymousId: string;
-}
+// Defines expected location state structure
+// interface LocationState {
+//   anonymousId: string;
+// }
 
 interface FormData {
   category: string;
@@ -16,15 +17,25 @@ interface FormData {
   description: string;
 }
 
+// Category to topics mapping
+// const CATEGORY_TOPICS: { [key: string]: string[] } = {
+//   Company: ['Toxic Work Culture', 'Burnout and Overwork', 'Compensation', 'Unethical Business Practices', 'Office Politics'],
+//   College: ['Exams', 'Faculty', 'Mental Health', 'Placements', 'Curriculum'],
+//   Government: ['Corruption', 'Healthcare Failure', 'Government Favouring Rich', 'Public Infrastructure Neglect', 'Police and Judicial Misconduct'],
+//   School: ['Bullying', 'Curriculum', 'Teacher-student Relations', 'Mental Health', 'Safety Issues'],
+//   Other: ['Other'],
+// };
+
+
+
+const COUNTRIES = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Other'];
 const CATEGORIES = ['Company', 'College', 'School', 'Government', 'Other'];
 const TOPICS = ['WorkPressure', 'Bullying', 'Harassment', 'Discrimination', 'Corruption', 'Other'];
-const COUNTRIES = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Other'];
 
 export default function CreateStoryPage() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { anonymousId } = (location.state as LocationState) || {};
-  const addStory = useStoryStore((state) => state.addStory);
+  const navigate = useNavigate(); // For navigation
+  let anonymousId = JSON.parse(localStorage.getItem('user') || '{}');
+  const addStory = useStoryStore((state) => state.addStory); // Zustand store action
 
   const [formData, setFormData] = useState<FormData>({
     category: '',
@@ -81,7 +92,7 @@ export default function CreateStoryPage() {
               </label>
               <input
                 type="text"
-                value={anonymousId}
+                value={anonymousId.username}
                 disabled
                 className="block w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-500"
               />

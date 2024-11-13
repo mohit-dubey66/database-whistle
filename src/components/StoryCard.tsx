@@ -14,6 +14,8 @@ interface StoryProps {
   reactions: {
     [key: string]: number;
   };
+  selectedReaction: string | null;
+  onReactionSelect: (storyId: string, reaction: string) => void;
 }
 
 const defaultReactions = {
