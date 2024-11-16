@@ -25,6 +25,7 @@ export interface Story {
     [key: string]: number;
   };
   createdAt: number;
+  reactions: { [key: string]: number };
 }
 
 interface StoryState {
@@ -49,7 +50,7 @@ export const useStoryStore = create<StoryState>((set, get) => {
     const stories = snapshot.docs.map(doc => {
       const data = doc.data();
       const reactions = data.reactions || defaultReactions;
-      
+
       // Ensure reactions are numbers
       const normalizedReactions = Object.keys(defaultReactions).reduce((acc, key) => ({
         ...acc,
@@ -58,9 +59,16 @@ export const useStoryStore = create<StoryState>((set, get) => {
 
       return {
         id: doc.id,
-        ...data,
-        reactions: normalizedReactions,
-        timeAgo: formatRelativeTime(data.createdAt)
+        category: data.category,
+        subCategory: data.subCategory,
+        insider: data.insider,
+        location: data.location,
+        timeAgo: formatRelativeTime(data.createdAt),
+        title: data.title,
+        content: data.content,
+        tags: data.tags,
+        createdAt: data.createdAt,
+        reactions: normalizedReactions
       };
     }) as Story[];
     set({ stories, loading: false });

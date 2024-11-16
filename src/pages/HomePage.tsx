@@ -54,7 +54,7 @@ export default function HomePage() {
           <StoryCard
             key={story.id}
             {...story}
-            selectedReaction={storyReactions[story.id] || null}
+            selectedReaction={typeof storyReactions[story.id] === 'string' ? storyReactions[story.id] : null}
             onReactionSelect={handleReactionSelect}
           />
         ))}

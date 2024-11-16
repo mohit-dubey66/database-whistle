@@ -16,6 +16,7 @@ interface FormData {
   country: string;
   title: string;
   description: string;
+  tags: string[];
 }
 
 // Category to topics mapping
@@ -42,6 +43,7 @@ export default function CreateStoryPage() {
     country: '',
     title: '',
     description: '',
+    tags: [],
   });
 
   // Redirect to identity claim if no anonymousId
@@ -60,6 +62,7 @@ export default function CreateStoryPage() {
       location: formData.country,
       title: formData.title,
       content: formData.description,
+      tags: formData.tags.map(tag => ({ label: tag })),
     });
     navigate('/');
   };

@@ -10,9 +10,9 @@ interface StoryProps {
   timeAgo: string;
   title: string;
   content: string;
-  reactions: {
-    [key: string]: number;
-  };
+  selectedReaction: string | null;
+  onReactionSelect: (storyId: string, reaction: string) => void;
+  reactions?: { [key: string]: number };
 }
 
 const defaultReactions = {

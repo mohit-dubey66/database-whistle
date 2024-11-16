@@ -11,9 +11,10 @@ export default function Header({ searchQuery = '', onSearchChange }: HeaderProps
   const navigate = useNavigate();
 
   const handleAddStory = () => {
-    const userUuid = localStorage.getItem('userUuid');
-    if (userUuid) {
-      navigate('/create-story', { state: { anonymousId: userUuid } });
+    const user = localStorage.getItem('user');
+    const userObj = user ? JSON.parse(user) : null;
+    if (userObj?.uuid) {
+      navigate('/create-story', { state: { anonymousId: userObj.uuid } });
     } else {
       navigate('/claim-identity');
     }
