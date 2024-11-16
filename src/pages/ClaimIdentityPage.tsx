@@ -185,18 +185,6 @@ export default function ClaimIdentityPage() {
               </button>
             </form>
           )}
-                            <button
-                                type="submit"
-                                disabled={!!error || !anonymousId.trim() || isChecking}
-                                className={`min-w-full py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black ${error || !anonymousId.trim() || isChecking
-                                    ? 'bg-gray-300 cursor-not-allowed'
-                                    : 'bg-black text-white hover:bg-gray-800'
-                                    }`}
-                            >
-                                {isChecking ? `Checking...` : 'Generate My Insider ID'}
-                            </button>
-                        </form>
-                    )}
 
           {step === 'uuid-display' && (
             <UuidDisplay
