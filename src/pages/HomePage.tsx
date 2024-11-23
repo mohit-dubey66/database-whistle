@@ -25,11 +25,11 @@ export default function HomePage() {
 
   const filteredStories = useMemo(() => {
     let filtered = stories;
-
+  
     if (selectedTag) {
       filtered = filtered.filter(story => story.subCategory === selectedTag);
     }
-
+  
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
       filtered = filtered.filter(story =>
@@ -38,12 +38,13 @@ export default function HomePage() {
         story.insider.toLowerCase().includes(query) ||
         story.location.toLowerCase().includes(query) ||
         story.subCategory.toLowerCase().includes(query) ||
-        story.tags.some(tag => tag.label.toLowerCase().includes(query))
+        (story.tags && story.tags.some(tag => tag.label.toLowerCase().includes(query)))  // Ensure story.tags exists
       );
     }
-
+  
     return filtered;
   }, [selectedTag, searchQuery, stories]);
+  
 
   return (
     <>

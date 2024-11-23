@@ -1,5 +1,6 @@
 import React from 'react';
 import { useStoryStore } from '../store/useStoryStore';
+import ShareMenu from './ShareMenu';
 
 interface StoryProps {
   id: string;
@@ -55,7 +56,10 @@ export default function StoryCard({
             Insider: {insider} · {location}
           </div>
         </div>
-        <span className="text-sm text-gray-500">{timeAgo}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500">{timeAgo}</span>
+          <ShareMenu storyId={id} title={title} content={content} />
+        </div>
       </div>
 
       <h2 className="text-xl font-semibold mb-4">{title}</h2>

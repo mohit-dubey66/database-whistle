@@ -7,7 +7,7 @@ interface HeaderProps {
   onSearchChange?: (query: string) => void;
 }
 
-export default function Header({ searchQuery = '', onSearchChange }: HeaderProps) {
+export default function Header({ searchQuery = '', onSearchChange = () => {} }: HeaderProps) {
   const navigate = useNavigate();
 
   const handleAddStory = () => {
