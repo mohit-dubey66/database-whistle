@@ -46,8 +46,8 @@ export default function StoryCard({
   };
 
   return (
-    <article className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-4">
-      <div className="flex justify-between items-start mb-4">
+    <article className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-4 sm:mb-6">
+      <div className="flex flex-row sm:flex-row justify-between items-start mb-4">
         <div>
           <div className="text-sm text-gray-600">
             {category} · {subCategory}
@@ -56,15 +56,16 @@ export default function StoryCard({
             Insider: {insider} · {location}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-2 sm:mt-0">
           <span className="text-sm text-gray-500">{timeAgo}</span>
           <ShareMenu storyId={id} title={title} content={content} />
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold mb-4">{title}</h2>
+      <h2 className="text-xl sm:text-2xl font-semibold mb-4">{title}</h2>
+
       <div 
-        className="text-gray-700 mb-6 prose max-w-none"
+        className="text-gray-700 mb-6 prose max-w-none text-sm sm:text-base"
         dangerouslySetInnerHTML={{ __html: content }}
       />
 
@@ -73,7 +74,7 @@ export default function StoryCard({
           <button
             key={reactionType}
             onClick={() => handleReactionClick(reactionType)}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            className="inline-flex items-center px-3 py-1 rounded-full text-sm sm:text-base bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
           >
             {reactionType}
             <span className="ml-2">{reactions[reactionType] || 0}</span>

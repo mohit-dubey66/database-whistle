@@ -21,7 +21,8 @@ const tags = [
 export default function TagList({ selectedTag, onTagSelect }: TagListProps) {
   return (
     <div className="px-4 sm:px-6 lg:px-8 border-b border-gray-100">
-      <div className="py-4 flex flex-wrap gap-2">
+      {/* Make the tag list horizontally scrollable */}
+      <div className="py-4 flex overflow-x-auto gap-2 whitespace-nowrap">
         {tags.map((tag) => (
           <button
             key={tag}
