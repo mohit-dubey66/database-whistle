@@ -5,7 +5,7 @@ import { useUserStore } from '../store/useUserStore';
 import UuidDisplay from '../components/UuidDisplay';
 
 type Step = 'username' | 'uuid-display' | 'uuid-verify';
-type Step = 'username' | 'uuid-display' | 'uuid-verify';
+// type Step = 'username' | 'uuid-display' | 'uuid-verify';
 
 export default function ClaimIdentityPage() {
   const [step, setStep] = useState<Step>('username');

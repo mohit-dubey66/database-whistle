@@ -4,10 +4,12 @@ import HomePage from './pages/HomePage';
 import ClaimIdentityPage from './pages/ClaimIdentityPage';
 import CreateStoryPage from './pages/CreateStoryPage';
 import StoryPage from './pages/StoryPage';
+import Toast from './components/Toast';
 
 function App() {
   return (
     <div className="min-h-screen bg-gray-50">
+      <Toast />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/claim-identity" element={<ClaimIdentityPage />} />

@@ -49,7 +49,12 @@ export default function HomePage() {
   return (
     <>
       <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} />
-      <TagList selectedTag={selectedTag} onTagSelect={handleTagSelect} />
+      
+      {/* Make TagList horizontally scrollable on mobile */}
+      <div className="overflow-x-auto px-2 mb-4">
+        <TagList selectedTag={selectedTag} onTagSelect={handleTagSelect} />
+      </div>
+      
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {filteredStories.map(story => (
           <StoryCard

@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
-import RichTextEditor from '../components/RichTextEditor';
-import { useStoryStore } from '../store/useStoryStore';
+// Import necessary React hooks and modules
+import React, { useEffect, useState } from 'react'; // For component rendering, managing state, and side effects
+import { useNavigate } from 'react-router-dom'; // For navigation between routes
+import { ArrowLeft } from 'lucide-react'; // Icon library for SVG icons
+import { showToast } from '../components/Toast'; // Custom reusable toast component
+import RichTextEditor from '../components/RichTextEditor'; // Custom rich text editor component
+import { useStoryStore } from '../store/useStoryStore'; // Zustand store for managing global state
 
-// Defines expected location state structure
-// interface LocationState {
-//   anonymousId: string;
-// }
-
+// Define TypeScript interface for form data structure
 interface FormData {
   category: string;
   topic: string;
@@ -18,22 +16,25 @@ interface FormData {
   tags: string[];
 }
 
-// Category to topics mapping
+// Predefined categories and topics for the form
 const CATEGORY_TOPICS = {
   Company: ['Toxic Work Culture', 'Burnout and Overwork', 'Compensation', 'Unethical Business Practices', 'Office Politics'],
-  College: ['Exams', 'Faculty', 'Mental Health', 'Placements', 'Curriculum'],
-  Government: ['Corruption', 'Healthcare Failure', 'Government Favouring Rich', 'Public Infrastructure Neglect', 'Police and Judicial Misconduct'],
-  School: ['Bullying', 'Curriculum', 'Teacher-student Relations', 'Mental Health', 'Safety Issues'],
-  Other: ['Other'],
+  College: ['Placements', 'Curriculum', 'Faculty', 'Exams', 'Mental Health'],
+  Government: ['Corruption', 'Favouring Rich', 'Scam', 'Healthcare Failure', 'Public Infrastructure', 'Judicial Misconduct'],
 };
 
-const COUNTRIES = ['India', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Other'];
+// Predefined list of countries for the dropdown
+const COUNTRIES = ['India', 'USA', 'UK', 'Canada'];
 
+// Main component for creating a story
 export default function CreateStoryPage() {
-  const navigate = useNavigate(); // For navigation
-  let anonymousId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '') : '';
-  const addStory = useStoryStore((state) => state.addStory); // Zustand store action
+  const navigate = useNavigate(); // Hook for programmatic navigation
+  const addStory = useStoryStore((state) => state.addStory); // Fetch the `addStory` method from the global state
 
+  // Retrieve the current user's anonymous ID from local storage, if available
+  const anonymousId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') || '{}') : null;
+
+  // Initialize state for form data with default values
   const [formData, setFormData] = useState<FormData>({
     category: '',
     topic: '',
@@ -43,37 +44,58 @@ export default function CreateStoryPage() {
     tags: [],
   });
 
+  // Redirect the user to the identity claim page if no anonymous ID is found
   useEffect(() => {
-    if (!anonymousId) {
-      navigate("/claim-identity");
+    if (!anonymousId || !anonymousId.username) {
+      navigate('/claim-identity');
     }
-  },[]);
+  }, [anonymousId, navigate]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    addStory({
-      category: formData.category,
-      subCategory: formData.topic,
-      insider: anonymousId,
-      location: formData.country,
-      title: formData.title,
-      content: formData.description,
-      tags: formData.tags.map(tag => ({ label: tag })),
-    });
-    navigate('/');
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    // Validate if all required fields are filled
+    if (!formData.category || !formData.topic || !formData.country || !formData.title || !formData.description) {
+      showToast.error('Please fill in all fields.'); // Show error toast if validation fails
+      return;
+    }
+
+    try {
+      // Call `addStory` to save the story data
+      await addStory({
+        category: formData.category,
+        subCategory: formData.topic,
+        insider: anonymousId.username, // Use the username from the anonymous ID
+        location: formData.country,
+        title: formData.title,
+        content: formData.description,
+        tags: [],
+      });
+
+      // Show success toast and navigate back to the home page
+      showToast.success('Your story is submitted successfully!');
+      navigate('/');
+    } catch (error) {
+      // Show error toast if submission fails
+      showToast.error('Error submitting story. Please try again.');
+    }
   };
 
+  // Handle input changes and update the form data state
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value })); // Update the corresponding field
   };
 
-  // Dynamic Topics based on selected Category
+  // Get the list of topics filtered by the selected category
   const filteredTopics = CATEGORY_TOPICS[formData.category] || [];
 
+  // Render the form and layout
   return (
     <div className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center px-4 py-8">
       <div className="w-full max-w-3xl">
+        {/* Back button to navigate to the previous page */}
         <button
           onClick={() => navigate(-1)}
           className="mb-8 inline-flex items-center text-gray-600 hover:text-gray-900"
@@ -82,26 +104,31 @@ export default function CreateStoryPage() {
           Back
         </button>
 
+        {/* Page header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">It's time to blow the whistle...</h1>
           <p className="text-gray-600">Make sure you don't reveal your personal details...</p>
         </div>
 
+        {/* Form container */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Insider Name field (disabled and prefilled) */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Insider Name
               </label>
               <input
                 type="text"
-                value={anonymousId.username}
+                value={anonymousId?.username || 'Anonymous'}
                 disabled
                 className="block w-full px-4 py-3 rounded-lg bg-gray-50 border border-gray-300 text-gray-500 outline-none"
               />
             </div>
 
+            {/* Category, Topic, and Country dropdowns */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Category dropdown */}
               <div>
                 <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
                   Category
@@ -115,13 +142,13 @@ export default function CreateStoryPage() {
                   className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
                 >
                   <option value="">Select your category</option>
-                  {Object.keys(CATEGORY_TOPICS).map(cat => (
+                  {Object.keys(CATEGORY_TOPICS).map((cat) => (
                     <option key={cat} value={cat}>{cat}</option>
                   ))}
                 </select>
               </div>
-              
-              {/* Topic Dropdown */}
+
+              {/* Topic dropdown (filtered by category) */}
               <div>
                 <label htmlFor="topic" className="block text-sm font-medium text-gray-700 mb-1">
                   Topic
@@ -136,12 +163,13 @@ export default function CreateStoryPage() {
                   disabled={!formData.category}
                 >
                   <option value="">Choose your topic</option>
-                  {filteredTopics.map(topic => (
+                  {filteredTopics.map((topic) => (
                     <option key={topic} value={topic}>{topic}</option>
                   ))}
                 </select>
               </div>
 
+              {/* Country dropdown */}
               <div>
                 <label htmlFor="country" className="block text-sm font-medium text-gray-700 mb-1">
                   Country
@@ -155,13 +183,14 @@ export default function CreateStoryPage() {
                   className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-black focus:border-transparent"
                 >
                   <option value="">Select your location</option>
-                  {COUNTRIES.map(country => (
+                  {COUNTRIES.map((country) => (
                     <option key={country} value={country}>{country}</option>
                   ))}
                 </select>
               </div>
             </div>
 
+            {/* Title field */}
             <div>
               <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
                 Title
@@ -178,16 +207,18 @@ export default function CreateStoryPage() {
               />
             </div>
 
+            {/* Description field with a rich text editor */}
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
                 Story description
               </label>
               <RichTextEditor
                 content={formData.description}
-                onChange={(content) => setFormData(prev => ({ ...prev, description: content }))}
+                onChange={(content) => setFormData((prev) => ({ ...prev, description: content }))}
               />
             </div>
 
+            {/* Submit button */}
             <div className="flex justify-center">
               <button
                 type="submit"
