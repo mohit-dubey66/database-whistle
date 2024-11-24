@@ -26,7 +26,7 @@ export interface Story {
   };
   tags: { label: string }[];
   createdAt: number;
-  reactions: { [key: string]: number };
+  // reactions: { [key: string]: number };
 }
 
 interface StoryState {
