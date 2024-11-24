@@ -51,6 +51,7 @@ export default function CreateStoryPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if(formData.description) {
     addStory({
       category: formData.category,
       subCategory: formData.topic,
@@ -61,6 +62,10 @@ export default function CreateStoryPage() {
       tags: formData.tags.map(tag => ({ label: tag })),
     });
     navigate('/');
+  }
+  else {
+    alert("Please fill the story description");
+  }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
