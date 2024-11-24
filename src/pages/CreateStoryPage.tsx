@@ -56,11 +56,7 @@ export default function CreateStoryPage() {
     e.preventDefault(); // Prevent default form submission behavior
 
     // Validate if all required fields are filled
-    if (!formData.category || !formData.topic || !formData.country || !formData.title || !formData.description) {
-      showToast.error('Please fill in all fields.'); // Show error toast if validation fails
-      return;
-    }
-
+    if(formData.description) {
     try {
       // Call `addStory` to save the story data
       await addStory({
@@ -80,6 +76,11 @@ export default function CreateStoryPage() {
       // Show error toast if submission fails
       showToast.error('Error submitting story. Please try again.');
     }
+  }
+  else {
+    showToast.error('Please fill in all fields.'); // Show error toast if validation fails
+    return;
+  }
   };
 
   // Handle input changes and update the form data state
