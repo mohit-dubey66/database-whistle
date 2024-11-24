@@ -26,18 +26,18 @@ export default function FloatingMenu() {
       icon: MessageSquarePlus,
       onClick: () => window.open('#', '_blank')
     },
-    {
-      label: 'Category/Topic Request',
-      icon: ChefHat,
-      onClick: () => window.open('#', '_blank')
-    },
+    // {
+    //   label: 'Category/Topic Request',
+    //   icon: ChefHat,
+    //   onClick: () => window.open('#', '_blank')
+    // },
     {
       label: 'Feature Request',
       icon: Gift,
       onClick: () => window.open('#', '_blank')
     },
     {
-      label: 'Donate for Freedom of speech',
+      label: 'Donate ',
       icon: Heart,
       onClick: () => window.open('#', '_blank')
     }
@@ -52,8 +52,8 @@ export default function FloatingMenu() {
             isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
           }`}
         >
-          <div className="flex flex-col-reverse gap-3 items-end p-5 rounded-md border-gray-200 border border-solid">
-            {menuItems.map((item) => (
+          <div className="flex flex-col-reverse gap-3 items-end py-3 rounded w-[12rem] border-gray-400 bg-zinc-100 border border-solid">
+            {menuItems.map((item,index) => (
               <button
                 key={item.label}
                 onClick={(e) => {
@@ -61,12 +61,12 @@ export default function FloatingMenu() {
                   item.onClick();
                   setIsOpen(false);
                 }}
-                className="flex items-center gap-3 px-4 py-2 bg-white rounded-lg shadow-lg hover:bg-gray-50 transition-colors group"
+                className={`flex items-center gap-3 px-4 py-2   border-b-[1px]  ${index == menuItems.length-1 ? "none" : "border-zinc-300"  } w-full  hover:bg-gray-50 transition-colors group`}
               >
                 <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
                   {item.label}
                 </span>
-                <item.icon className="w-5 h-5 text-gray-600 group-hover:text-gray-900" />
+                {/* <item.icon className="w-[30px] h-5 text-gray-600 group-hover:text-gray-900" /> */}
               </button>
             ))}
           </div>

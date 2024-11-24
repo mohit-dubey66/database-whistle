@@ -49,9 +49,9 @@ export default function Header({ searchQuery = '', onSearchChange = () => {} }: 
 
           <button
             onClick={handleAddStory}
-            className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+            className=" inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
           >
-            <Plus className="h-5 w-5" />
+            <Plus className="h-5 w-5 " />
             <span className="hidden sm:inline">Add Your Story</span>
           </button>
         </div>

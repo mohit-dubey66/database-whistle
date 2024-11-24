@@ -7,15 +7,16 @@ interface TagListProps {
 
 const tags = [
   'Feed',
-  'ToxicEnvironment',
-  'Frustrations',
-  'Bullying',
-  'Ragging',
-  'WorkPressure',
-  'AcademicPressure',
+  'Overwork',
+  'College',
   'Placements',
-  'OfficePolitics',
-  'PoorWorkLifeBalance'
+  'Faculty',
+  'Healthcare Failure',
+  'WorkPressure',
+  'Government',
+  'Public Infrastructure',
+  'Judicial Misconduct',
+  
 ];
 
 export default function TagList({ selectedTag, onTagSelect }: TagListProps) {
@@ -27,7 +28,7 @@ export default function TagList({ selectedTag, onTagSelect }: TagListProps) {
           <button
             key={tag}
             onClick={() => onTagSelect(tag === 'Feed' ? null : selectedTag === tag ? null : tag)}
-            className={`flex-none px-4 py-1.5 rounded-full text-sm transition-colors ${
+            className={`flex-none px-4 py-1.5 rounded-lg text-sm transition-colors ${
               (tag === 'Feed' && !selectedTag) || selectedTag === tag
                 ? 'bg-black text-white'
                 : 'bg-gray-100 hover:bg-gray-200'

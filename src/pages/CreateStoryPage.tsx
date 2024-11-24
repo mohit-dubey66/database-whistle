@@ -222,7 +222,7 @@ export default function CreateStoryPage() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="px-8 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                className="px-8 py-3 bg-black text-white rounded-lg w-full hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black sm:w-[20rem]"
               >
                 SUBMIT
               </button>

@@ -21,7 +21,7 @@ const defaultReactions = {
   'I also feel this': 0,
   'Brave': 0,
   'Thought-Provoking': 0,
-  'Support': 0
+  'Support': 0,
 };
 
 export default function StoryCard({
@@ -46,13 +46,13 @@ export default function StoryCard({
   };
 
   return (
-    <article className="bg-white rounded-lg shadow-sm border border-gray-100 p-6 mb-4 sm:mb-6">
-      <div className="flex flex-row sm:flex-row justify-between items-start mb-4">
-        <div>
-          <div className="text-sm text-gray-600">
+    <article className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-4 sm:mb-6 max-w-full">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-start mb-4">
+        <div className="flex-1 min-w-0">
+          <div className="text-sm text-gray-600 break-words">
             {category} · {subCategory}
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-gray-500 break-words">
             Insider: {insider} · {location}
           </div>
         </div>
@@ -62,10 +62,10 @@ export default function StoryCard({
         </div>
       </div>
 
-      <h2 className="text-xl sm:text-2xl font-semibold mb-4">{title}</h2>
+      <h2 className="text-xl sm:text-2xl font-semibold mb-4 break-words">{title}</h2>
 
-      <div 
-        className="text-gray-700 mb-6 prose max-w-none text-sm sm:text-base"
+      <div
+        className="text-gray-700 mb-6 prose max-w-none text-sm sm:text-base break-words overflow-hidden"
         dangerouslySetInnerHTML={{ __html: content }}
       />
 
