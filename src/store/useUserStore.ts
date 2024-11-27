@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { collection, query, where, getDocs, setDoc, doc, getDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, setDoc, doc, getDoc, deleteDoc, addDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 
 interface User {
@@ -31,6 +31,41 @@ const generateShortId = () => {
   }
   
   return `${result.slice(0, 4)}-${result.slice(4)}`;
+};
+
+export const storeUserEmail = async (email: string, uuid: string, username: string) => {
+  try {
+    await addDoc(collection(db, 'userEmails'), {
+      email: email.toLowerCase(),
+      uuid,
+      username,
+      createdAt: Date.now()
+    });
+    return true;
+  } catch (error) {
+    console.error('Error storing email:', error);
+    throw error;
+  }
+};
+
+export const retrieveUuidByEmail = async (email: string) => {
+  try {
+    const q = query(collection(db, 'userEmails'), where('email', '==', email.toLowerCase()));
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      return null;
+    }
+
+    const userData = querySnapshot.docs[0].data();
+    return {
+      uuid: userData.uuid,
+      username: userData.username
+    };
+  } catch (error) {
+    console.error('Error retrieving UUID:', error);
+    throw error;
+  }
 };
 
 export const useUserStore = create<UserState>(() => ({

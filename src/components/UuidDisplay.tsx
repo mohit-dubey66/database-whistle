@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Copy, Check } from 'lucide-react';
+import EmailStorageModal from './EmailStorageModal';
 
 interface UuidDisplayProps {
   uuid: string;
@@ -9,6 +10,7 @@ interface UuidDisplayProps {
 
 export default function UuidDisplay({ uuid, username, onContinue }: UuidDisplayProps) {
   const [copied, setCopied] = useState(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
 
   const handleCopy = useCallback(async () => {
     try {
@@ -49,6 +51,14 @@ export default function UuidDisplay({ uuid, username, onContinue }: UuidDisplayP
             {copied ? <Check className="h-5 w-5" /> : <Copy className="h-5 w-5" />}
           </button>
         </div>
+
+        <button
+          onClick={() => setIsEmailModalOpen(true)}
+          className="mt-4 text-blue-600 hover:text-blue-800 text-sm font-medium"
+        >
+          Store my ID for future recovery
+        </button>
+
       </div>
 
       <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4">
@@ -72,6 +82,14 @@ export default function UuidDisplay({ uuid, username, onContinue }: UuidDisplayP
       >
         I've Saved My ID, Continue
       </button>
+
+      <EmailStorageModal
+        isOpen={isEmailModalOpen}
+        onClose={() => setIsEmailModalOpen(false)}
+        uuid={uuid}
+        username={username}
+      />
+
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, ArrowLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useUserStore } from '../store/useUserStore';
 import UuidDisplay from '../components/UuidDisplay';
+import UuidRecoveryModal from '../components/UuidRecoveryModal';
 
 type Step = 'username' | 'uuid-display' | 'uuid-verify';
 // type Step = 'username' | 'uuid-display' | 'uuid-verify';
@@ -15,6 +16,7 @@ export default function ClaimIdentityPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isChecking, setIsChecking] = useState(false);
+  const [isRecoveryModalOpen, setIsRecoveryModalOpen] = useState(false);
   const navigate = useNavigate();
 
     useEffect(() => {
@@ -105,6 +107,11 @@ export default function ClaimIdentityPage() {
             setStep('username');
         }
     };
+
+    const handleRecoveredUuid = (recoveredUuid: string) => {
+        setUuid(recoveredUuid);
+        setStep('uuid-verify');
+      };
 
     // Rest of the component remains the same...
     return (
@@ -212,6 +219,13 @@ export default function ClaimIdentityPage() {
                                     placeholder="Enter your Insider ID"
                                     required
                                 />
+                                <button
+                                type="button"
+                                onClick={() => setIsRecoveryModalOpen(true)}
+                                className="mt-2 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                                >
+                                Forgot your Insider ID?
+                                </button>                                
                                 {error && (
                                     <div className="mt-2 flex items-center text-red-600">
                                         <AlertCircle className="h-4 w-4 mr-1" />
@@ -242,6 +256,11 @@ export default function ClaimIdentityPage() {
                     )}
                 </div>
             </div>
+            <UuidRecoveryModal
+                isOpen={isRecoveryModalOpen}
+                onClose={() => setIsRecoveryModalOpen(false)}
+                onUuidRecovered={handleRecoveredUuid}
+            />
         </div>
     );
 }

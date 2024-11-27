@@ -34,6 +34,7 @@ interface StoryState {
   loading: boolean;
   addStory: (story: Omit<Story, 'id' | 'timeAgo' | 'reactions' | 'createdAt'>) => Promise<void>;
   toggleReaction: (storyId: string, reaction: string) => Promise<void>;
+  incrementViews: (storyId: string) => Promise<void>;
 }
 
 const defaultReactions = {

@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStoryStore } from '../store/useStoryStore';
 import ShareMenu from './ShareMenu';
+import { ChevronDown, ChevronUp, Eye } from 'lucide-react';
+import { useInView } from '../hooks/useInView';
+import clsx from 'clsx'; //A utility for dynamically combining class names based on conditions, arrays, or objects
 
 interface StoryProps {
   id: string;
@@ -11,6 +14,7 @@ interface StoryProps {
   timeAgo: string;
   title: string;
   content: string;
+  views: number; // for counting views
   selectedReaction: string | null;
   onReactionSelect: (storyId: string, reaction: string) => void;
   reactions?: { [key: string]: number };
@@ -33,9 +37,24 @@ export default function StoryCard({
   timeAgo,
   title,
   content,
+  views = 0, //initial views is 0
   reactions = defaultReactions,
 }: StoryProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const toggleReaction = useStoryStore(state => state.toggleReaction);
+  const incrementViews = useStoryStore(state => state.incrementViews);
+
+  // Use intersection observer to track when story is in view
+  const { elementRef, hasBeenViewed } = useInView({
+    threshold: 0.5, // Element is considered visible when 50% is in view
+  });
+
+  // Only increment views once when the story comes into view
+  useEffect(() => {
+    if (hasBeenViewed) {
+      incrementViews(id);
+    }
+  }, [hasBeenViewed, id]);
 
   const handleReactionClick = async (reaction: string) => {
     try {
@@ -45,11 +64,22 @@ export default function StoryCard({
     }
   };
 
+    // Calculate content height to determine if we need the Read More button
+    const contentRef = React.useRef<HTMLDivElement>(null);
+    const [shouldShowReadMore, setShouldShowReadMore] = useState(true);
+  
+    React.useEffect(() => {
+      if (contentRef.current) {
+        const height = contentRef.current.scrollHeight;
+        setShouldShowReadMore(height > 200);
+      }
+    }, [content]);
+
   return (
     <article className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-4 sm:mb-6 max-w-full">
-      <div className="flex flex-col sm:flex-row sm:justify-between items-start mb-4">
+      <div className="flex flex-row sm:flex-row sm:justify-between items-start mb-4">
         <div className="flex-1 min-w-0">
-          <div className="text-sm text-gray-600 break-words">
+          <div className="text-sm text-gray-600 font-medium break-words ">
             {category} · {subCategory}
           </div>
           <div className="text-sm text-gray-500 break-words">
@@ -64,10 +94,37 @@ export default function StoryCard({
 
       <h2 className="text-xl sm:text-2xl font-semibold mb-4 break-words">{title}</h2>
 
-      <div
-        className="text-gray-700 mb-6 prose max-w-none text-sm sm:text-base break-words overflow-hidden"
+      <div 
+        ref={contentRef}
+        className={clsx(
+          "text-gray-700 mb-2 prose max-w-none overflow-hidden transition-all duration-300",
+          !isExpanded && "max-h-[200px]"
+        )}
         dangerouslySetInnerHTML={{ __html: content }}
       />
+
+      {shouldShowReadMore && (
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full py-2 text-sm text-gray-600 hover:text-gray-900 flex items-center justify-center gap-1 transition-colors"
+        >
+          {isExpanded ? (
+            <>
+              Show Less <ChevronUp className="w-4 h-4" />
+            </>
+          ) : (
+            <>
+              Read More <ChevronDown className="w-4 h-4" />
+            </>
+          )}
+        </button>
+      )}
+
+      {/* <div className="flex items-center justify-between mt-6">
+        <div className="flex items-center gap-1 text-gray-500">
+          <Eye className="w-4 h-4" />
+          <span className="text-sm">{views} views</span>
+        </div> */}
 
       <div className="flex flex-wrap gap-2">
         {Object.entries(defaultReactions).map(([reactionType]) => (
@@ -80,7 +137,8 @@ export default function StoryCard({
             <span className="ml-2">{reactions[reactionType] || 0}</span>
           </button>
         ))}
-      </div>
+        </div>
+      {/* </div> */}
     </article>
   );
 }
