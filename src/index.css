@@ -43,8 +43,18 @@
   @apply list-decimal pl-4 mb-4;
 }
 
-
-*{
-  font-family: "Poppins";
+/* Smooth text truncation */
+.prose.truncated {
+  position: relative;
+  overflow: hidden;
 }
 
+.prose.truncated::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2rem;
+  background: linear-gradient(to bottom, transparent, white);
+}

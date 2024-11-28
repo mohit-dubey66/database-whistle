@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStoryStore } from '../store/useStoryStore';
 import ShareMenu from './ShareMenu';
-import { ChevronDown, ChevronUp, Eye } from 'lucide-react';
+import { ChartNoAxesColumn } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
 import clsx from 'clsx'; //A utility for dynamically combining class names based on conditions, arrays, or objects
 
@@ -67,11 +67,13 @@ export default function StoryCard({
     // Calculate content height to determine if we need the Read More button
     const contentRef = React.useRef<HTMLDivElement>(null);
     const [shouldShowReadMore, setShouldShowReadMore] = useState(true);
+    const [contentHeight, setContentHeight] = useState(0);
   
-    React.useEffect(() => {
+    useEffect(() => {
       if (contentRef.current) {
         const height = contentRef.current.scrollHeight;
-        setShouldShowReadMore(height > 200);
+        setContentHeight(height);
+        setShouldShowReadMore(height > 100);
       }
     }, [content]);
 
@@ -94,50 +96,48 @@ export default function StoryCard({
 
       <h2 className="text-xl sm:text-2xl font-semibold mb-4 break-words">{title}</h2>
 
-      <div 
-        ref={contentRef}
-        className={clsx(
-          "text-gray-700 mb-2 prose max-w-none overflow-hidden transition-all duration-300",
-          !isExpanded && "max-h-[200px]"
-        )}
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
-
-      {shouldShowReadMore && (
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full py-2 text-sm text-gray-600 hover:text-gray-900 flex items-center justify-center gap-1 transition-colors"
-        >
-          {isExpanded ? (
-            <>
-              Show Less <ChevronUp className="w-4 h-4" />
-            </>
-          ) : (
-            <>
-              Read More <ChevronDown className="w-4 h-4" />
-            </>
+      <div className="relative">
+        <div 
+          ref={contentRef}
+          className={clsx(
+            "prose max-w-none transition-all duration-300",
+            !isExpanded && "line-clamp-3"
           )}
-        </button>
-      )}
-
-      {/* <div className="flex items-center justify-between mt-6">
-        <div className="flex items-center gap-1 text-gray-500">
-          <Eye className="w-4 h-4" />
-          <span className="text-sm">{views} views</span>
-        </div> */}
-
-      <div className="flex flex-wrap gap-2">
-        {Object.entries(defaultReactions).map(([reactionType]) => (
-          <button
-            key={reactionType}
-            onClick={() => handleReactionClick(reactionType)}
-            className="inline-flex items-center px-3 py-1 rounded-full text-sm sm:text-base bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
-          >
-            {reactionType}
-            <span className="ml-2">{reactions[reactionType] || 0}</span>
-          </button>
-        ))}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+        
+        <div className="flex justify-end">
+          {shouldShowReadMore && !isExpanded && (
+            <button
+              onClick={() => setIsExpanded(true)}
+              className="text-gray-500 hover:text-gray-700 text-sm font-medium mt-1"
+            >
+              ...more
+            </button>
+          )}
         </div>
+      </div>
+
+        <div className="mt-6 space-y-4">
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(defaultReactions).map(([reactionType]) => (
+            <button
+              key={reactionType}
+              onClick={() => handleReactionClick(reactionType)}
+              className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            >
+              {reactionType}
+              <span className="ml-2">{reactions[reactionType] || 0}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-1.5 text-gray-500 border-t pt-4">
+          <ChartNoAxesColumn className="w-4 h-4" />
+          <span className="text-sm font-medium">{views.toLocaleString()} views</span>
+        </div>
+      </div>
+
       {/* </div> */}
     </article>
   );

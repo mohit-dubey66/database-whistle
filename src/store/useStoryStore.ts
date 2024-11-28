@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import { 
   collection, 
-  addDoc, 
   query, 
   orderBy, 
   onSnapshot, 
-  updateDoc, 
+  updateDoc,
+  addDoc,
   doc,
+  increment,
   Timestamp 
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
@@ -25,6 +26,7 @@ export interface Story {
     [key: string]: number;
   };
   tags: { label: string }[];
+  views: number;
   createdAt: number;
   // reactions: { [key: string]: number };
 }
@@ -32,7 +34,7 @@ export interface Story {
 interface StoryState {
   stories: Story[];
   loading: boolean;
-  addStory: (story: Omit<Story, 'id' | 'timeAgo' | 'reactions' | 'createdAt'>) => Promise<void>;
+  addStory: (story: Omit<Story, 'id' | 'timeAgo' | 'reactions' | 'views' | 'createdAt'>) => Promise<void>;
   toggleReaction: (storyId: string, reaction: string) => Promise<void>;
   incrementViews: (storyId: string) => Promise<void>;
 }
@@ -69,6 +71,7 @@ export const useStoryStore = create<StoryState>((set, get) => {
         title: data.title,
         content: data.content,
         tags: data.tags,
+        views: data.views || 0,
         createdAt: data.createdAt,
         reactions: normalizedReactions
       };
@@ -85,6 +88,7 @@ export const useStoryStore = create<StoryState>((set, get) => {
         await addDoc(collection(db, 'stories'), {
           ...newStory,
           reactions: defaultReactions,
+          views: 0,
           createdAt: Date.now()
         });
       } catch (error) {
@@ -109,6 +113,19 @@ export const useStoryStore = create<StoryState>((set, get) => {
         console.error('Error toggling reaction:', error);
         throw error;
       }
+    },
+
+    incrementViews: async (storyId: string) => {
+      try {
+        const storyRef = doc(db, 'stories', storyId);
+        await updateDoc(storyRef, {
+          views: increment(1)
+        });
+      } catch (error) {
+        console.error('Error incrementing views:', error);
+        throw error;
+      }
     }
+
   };
 });
