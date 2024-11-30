@@ -13,6 +13,7 @@ interface ShareMenuProps {
   storyId: string;
   title: string;
   content: string;
+  onClose: () => void;
 }
 
 export default function ShareMenu({ storyId, title, content }: ShareMenuProps) {
