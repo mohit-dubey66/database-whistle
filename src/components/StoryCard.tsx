@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStoryStore } from '../store/useStoryStore';
 import ShareMenu from './ShareMenu';
-import { ChartNoAxesColumn } from 'lucide-react';
+import { ChartNoAxesColumn, MessageSquare, Share2 } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
 import clsx from 'clsx'; //A utility for dynamically combining class names based on conditions, arrays, or objects
 
@@ -90,7 +90,7 @@ export default function StoryCard({
         </div>
         <div className="flex items-center gap-2 mt-2 sm:mt-0">
           <span className="text-sm text-gray-500">{timeAgo}</span>
-          <ShareMenu storyId={id} title={title} content={content} />
+          {/* <ShareMenu storyId={id} title={title} content={content} /> */}
         </div>
       </div>
 
@@ -118,7 +118,7 @@ export default function StoryCard({
         </div>
       </div>
 
-        <div className="mt-6 space-y-4">
+      <div className="mt-6 space-y-4">
         <div className="flex flex-wrap gap-2">
           {Object.entries(defaultReactions).map(([reactionType]) => (
             <button
@@ -131,14 +131,24 @@ export default function StoryCard({
             </button>
           ))}
         </div>
+          {/* The down part buttons of the story card */}
+          <div className="grid grid-cols-3 border-t pt-4 text-gray-600">
+            <div className="flex items-center justify-center gap-1.5 hover:text-gray-900">
+              <ChartNoAxesColumn className="w-4 h-4" />
+              <span className="text-sm font-medium">{views.toLocaleString()} views</span>
+            </div>
 
-        <div className="flex items-center gap-1.5 text-gray-500 border-t pt-4">
-          <ChartNoAxesColumn className="w-4 h-4" />
-          <span className="text-sm font-medium">{views.toLocaleString()} views</span>
-        </div>
+            <button className="flex items-center justify-center gap-1.5 hover:text-gray-900 font-medium">
+              <MessageSquare className="w-4 h-4" />
+              <span className="text-sm"> Comments</span>
+            </button>
+
+            <div className="relative flex items-center justify-center">
+              <ShareMenu storyId={id} title={title} content={content} />
+            </div>
+
+          </div>
       </div>
-
-      {/* </div> */}
     </article>
   );
 }

@@ -13,7 +13,6 @@ interface ShareMenuProps {
   storyId: string;
   title: string;
   content: string;
-  onClose: () => void;
 }
 
 export default function ShareMenu({ storyId, title, content }: ShareMenuProps) {
@@ -54,10 +53,11 @@ export default function ShareMenu({ storyId, title, content }: ShareMenuProps) {
     <div className="relative share-menu">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+        className="flex items-center gap-1.5 hover:text-gray-900"
         aria-label="Share story"
       >
-        <Share2 className="w-5 h-5 text-gray-600" />
+        <Share2 className="w-4 h-4 text-gray-600" />
+        <span className="text-sm font-medium">Share</span>
       </button>
 
       {isOpen && (
