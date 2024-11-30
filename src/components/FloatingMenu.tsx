@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ChefHat, Heart, MessageSquare, Star, X } from 'lucide-react';
+import { ChefHat, Handshake, Heart, MessageSquare, Star, X } from 'lucide-react';
 import clsx from 'clsx';
 
 interface MenuOption {
@@ -45,6 +45,12 @@ export default function FloatingMenu() {
       icon: MessageSquare,
       label: 'Feedback',
       description: 'Share your thoughts',
+      onClick: () => window.open('#', '_blank')
+    },
+    {
+      icon: Handshake,
+      label: 'Follow Us',
+      description: 'Join us on other platforms',
       onClick: () => window.open('#', '_blank')
     }
   ];
