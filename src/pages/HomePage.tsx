@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import TagList from '../components/TagList';
 import StoryCard from '../components/StoryCard';
 import Header from '../components/Header';
@@ -10,7 +10,18 @@ export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [storyReactions, setStoryReactions] = useState<Record<string, string | null>>({});
   
-  const stories = useStoryStore((state) => state.stories);
+  const { 
+    stories, 
+    loading, 
+    hasMore, 
+    loadMoreStories,
+    resetStories 
+  } = useStoryStore();
+
+  // Reset stories when tag changes
+  useEffect(() => {
+    resetStories();
+  }, [selectedTag]);
 
   const handleTagSelect = (tag: string | null) => {
     setSelectedTag(tag);
@@ -41,9 +52,31 @@ export default function HomePage() {
         (story.tags && story.tags.some(tag => tag.label.toLowerCase().includes(query)))  // Ensure story.tags exists
       );
     }
+
+    // Ensure no duplicate stories by using a Map with story ID as key
+    const uniqueStories = Array.from(
+      new Map(filtered.map(story => [story.id, story])).values()
+    );
   
-    return filtered;
+    return uniqueStories;
   }, [selectedTag, searchQuery, stories]);
+
+    // Infinite scroll handler
+    const handleScroll = useCallback(() => {
+      if (loading || !hasMore) return;
+  
+      const scrolledToBottom =
+        window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1000;
+  
+      if (scrolledToBottom) {
+        loadMoreStories();
+      }
+    }, [loading, hasMore, loadMoreStories]);
+  
+    useEffect(() => {
+      window.addEventListener('scroll', handleScroll);
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, [handleScroll]);
   
 
   return (
@@ -71,6 +104,12 @@ export default function HomePage() {
                 ? 'No stories found matching your search criteria.'
                 : 'No stories found for this tag.'}
             </p>
+          </div>
+        )}
+        
+        {!loading && !hasMore && filteredStories.length > 0 && (
+          <div className="text-center py-8 text-gray-500">
+            You've reached the end
           </div>
         )}
       </main>

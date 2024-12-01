@@ -4,6 +4,7 @@ import ShareMenu from './ShareMenu';
 import { ChartNoAxesColumn, MessageSquare } from 'lucide-react';
 import { useInView } from '../hooks/useInView';
 import clsx from 'clsx'; //A utility for dynamically combining class names based on conditions, arrays, or objects
+import { useViewThrottle } from '../hooks/useViewThrottle';
 
 interface StoryProps {
     id: string;
@@ -55,12 +56,14 @@ export default function StoryCard({
         threshold: 0.5, // Element is considered visible when 50% is in view
     });
 
+    const canIncrementView = useViewThrottle(id);
+
     // Only increment views once when the story comes into view
     useEffect(() => {
-        if (hasBeenViewed) {
+        if (hasBeenViewed && canIncrementView) {
             incrementViews(id);
         }
-    }, [hasBeenViewed, id]);
+    }, [hasBeenViewed, canIncrementView, id]);
 
     const handleReactionClick = async (reaction: string) => {
         try {
@@ -148,7 +151,7 @@ export default function StoryCard({
     }
 
     return (
-        <article className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-4 sm:mb-6 max-w-full" ref={elementRef}>
+        <article ref={elementRef} className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-4 sm:mb-6 max-w-full">
             <div className="flex flex-row sm:flex-row sm:justify-between items-start mb-4">
                 <div className="flex-1 min-w-0">
                     <div className="text-sm text-gray-600 font-medium break-words ">
