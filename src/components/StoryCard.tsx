@@ -148,7 +148,7 @@ export default function StoryCard({
     }
 
     return (
-        <article className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-4 sm:mb-6 max-w-full">
+        <article className="bg-white rounded-lg shadow-sm border border-gray-100 p-4 sm:p-6 mb-4 sm:mb-6 max-w-full" ref={elementRef}>
             <div className="flex flex-row sm:flex-row sm:justify-between items-start mb-4">
                 <div className="flex-1 min-w-0">
                     <div className="text-sm text-gray-600 font-medium break-words ">
