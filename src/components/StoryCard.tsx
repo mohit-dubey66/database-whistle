@@ -16,7 +16,7 @@ interface StoryProps {
     title: string;
     content: string;
     views: number; // for counting views
-    comments?: number;
+    // comments?: number;
     selectedReaction: string | null;
     onReactionSelect: (storyId: string, reaction: string) => void;
     reactions?: { [key: string]: number };
@@ -40,7 +40,7 @@ export default function StoryCard({
     title,
     content,
     views = 0, //initial views is 0
-    comments = 0,
+    // comments = 0,
     reactions = defaultReactions,
 }: StoryProps) {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -193,7 +193,7 @@ export default function StoryCard({
 
                     <button className="flex items-center justify-center gap-1.5 hover:text-gray-900 font-medium">
                         <MessageSquare className="w-4 h-4" />
-                        <span className="text-sm"> {comments} Comments</span>
+                        <span className="text-sm"> Comments</span>
                     </button>
 
                     <div className="relative flex items-center justify-center">

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChefHat, Handshake, Heart, MessageSquare, Star } from 'lucide-react';
 import clsx from 'clsx';
+import FeedbackModal from './FeedbackModal';
+import FeatureRequestModal from './FeatureRequestModal';
 
 interface MenuOption {
     icon: React.ElementType;
@@ -11,8 +13,10 @@ interface MenuOption {
 
 export default function FloatingMenu() {
     const [isOpen, setIsOpen] = useState(false);
+    const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
+    const [isFeatureRequestModalOpen, setIsFeatureRequestModalOpen] = useState(false);
     const [showToast, setShowToast] = useState(true);
-
+    
     const handleClickOutside = useCallback((event: MouseEvent) => {
         const target = event.target as HTMLElement;
         if (!target.closest('.floating-menu')) {
@@ -46,13 +50,19 @@ export default function FloatingMenu() {
             icon: Star,
             label: 'Feature Requests',
             description: 'Suggest new features',
-            onClick: () => window.open('#', '_blank')
+            onClick: () => {
+                setIsFeatureRequestModalOpen(true);
+                setIsOpen(false);
+              }
         },
         {
             icon: MessageSquare,
             label: 'Feedback',
             description: 'Share your thoughts',
-            onClick: () => window.open('#', '_blank')
+            onClick: () => {
+                setIsFeedbackModalOpen(true);
+                setIsOpen(false);
+              }
         },
         {
             icon: Handshake,
@@ -63,6 +73,7 @@ export default function FloatingMenu() {
     ];
 
     return (
+        <>
         <div className="fixed bottom-6 right-6 z-50 floating-menu">
             {/* Menu Items */}
             <div
@@ -128,5 +139,15 @@ export default function FloatingMenu() {
                 </div>
             </div>
         </div>
+        <FeedbackModal 
+        isOpen={isFeedbackModalOpen}
+        onClose={() => setIsFeedbackModalOpen(false)}
+        />
+
+        <FeatureRequestModal
+        isOpen={isFeatureRequestModalOpen}
+        onClose={() => setIsFeatureRequestModalOpen(false)}
+        />
+      </>
     );
 }
